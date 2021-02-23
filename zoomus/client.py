@@ -38,7 +38,7 @@ class ZoomClient(util.ApiClient):
     """Base URL for Zoom API"""
 
     def __init__(
-        self, api_key, api_secret, data_type="json", timeout=15, version=API_VERSION_2
+        self, api_key=None, api_secret=None, token=None, data_type="json", timeout=15, version=API_VERSION_2
     ):
         """Create a new Zoom client
 
@@ -61,7 +61,7 @@ class ZoomClient(util.ApiClient):
             "api_secret": api_secret,
             "data_type": data_type,
             "version": version,
-            "token": util.generate_jwt(api_key, api_secret),
+            "token": token if token else util.generate_jwt(api_key, api_secret),
         }
 
         # Instantiate the components
@@ -102,6 +102,12 @@ class ZoomClient(util.ApiClient):
         """Set the api_secret"""
         self.config["api_secret"] = value
         self.refresh_token()
+
+    @property
+    def token(self):
+        """The Zoom.us token"""
+        return self.config.get("token")
+
 
     @property
     def meeting(self):
